@@ -76,8 +76,16 @@ const Share = {
             ? ` 🔥${stats.currentPlayStreak}`
             : '';
 
+        // Format today's date
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+
         return [
-            `Dead or Alive #${results.dayNumber}`,
+            `Dead or Alive #${results.dayNumber} · ${dateStr}`,
             `${results.score}/${results.total}${streakText}`,
             emojiGrid,
             '',
