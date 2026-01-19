@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A daily celebrity guessing game. Dead or alive? Test your knowledge of who's still with us and who has shuffled off this mortal coil.">
+    <meta name="keywords" content="celebrity game, daily game, wordle, dead or alive, trivia, guessing game">
+    <meta name="author" content="Dead or Alive">
+    <meta name="theme-color" content="#1a1a1a">
+    <title>Dead or Alive - Daily Celebrity Guessing Game</title>
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://deadoralive.today/">
+    <meta property="og:title" content="Dead or Alive">
+    <meta property="og:description" content="A daily celebrity guessing game. Dead or alive? Test your knowledge of who's still with us.">
+    <meta property="og:image" content="https://deadoralive.today/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://deadoralive.today/">
+    <meta name="twitter:title" content="Dead or Alive">
+    <meta name="twitter:description" content="A daily celebrity guessing game. Dead or alive? Test your knowledge of who's still with us.">
+    <meta name="twitter:image" content="https://deadoralive.today/assets/og-image.png">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Special+Elite&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css?v=2">
+    <link rel="icon" href="assets/favicon.ico">
+</head>
+<body>
+    <!-- Paper texture overlay -->
+    <div class="paper-texture"></div>
+
+    <div class="container">
+        <!-- Newspaper Masthead -->
+        <header class="masthead">
+            <div class="masthead-rule top"></div>
+            <div class="masthead-date">
+                <span class="edition">DAILY EDITION</span>
+                <span class="date-text" id="currentDate"></span>
+                <span class="price">PRICE: ONE GUESS</span>
+            </div>
+            <h1 class="masthead-title">Dead or Alive</h1>
+            <p class="masthead-subtitle">— Who Among Us Has Shuffled Off This Mortal Coil? —</p>
+            <div class="masthead-rule bottom"></div>
+            <div class="day-counter" id="dayCounter"></div>
+        </header>
+
+        <!-- Loading Screen -->
+        <div class="screen" id="loadingScreen">
+            <div class="loading-content">
+                <div class="typewriter-loader">
+                    <span class="typing-text">Checking the archives</span>
+                    <span class="cursor">|</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Already Played Screen -->
+        <div class="screen hidden" id="alreadyPlayedScreen">
+            <div class="already-played-content">
+                <div class="clipping-box">
+                    <h2 class="clipping-headline">EDITION CLOSED</h2>
+                    <p class="clipping-body">Today's edition has already gone to print.<br>Return tomorrow for the next pressing.</p>
+                </div>
+                <div class="results-summary" id="previousResults"></div>
+                <button class="btn btn-primary" id="shareAgainBtn">
+                    <span class="btn-text">SHARE RESULTS</span>
+                </button>
+                <p class="share-hint" id="shareAgainHint"></p>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="screen hidden" id="gameScreen">
+            <!-- Progress -->
+            <div class="progress-container">
+                <div class="progress-text">
+                    SUBJECT <span id="currentRound">1</span> OF <span id="totalRounds">10</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <!-- Streak Display -->
+            <div class="streak-display">
+                <div class="streak current-streak">
+                    <span class="streak-label">STREAK</span>
+                    <span class="streak-value" id="currentStreak">0</span>
+                </div>
+                <div class="streak-divider">•</div>
+                <div class="streak best-streak">
+                    <span class="streak-label">RECORD</span>
+                    <span class="streak-value" id="bestStreak">0</span>
+                </div>
+            </div>
+
+            <!-- Celebrity Card - Newspaper Clipping -->
+            <div class="clipping-card" id="celebrityCard">
+                <div class="clipping-photo">
+                    <img id="celebrityImage" src="" alt="" class="photo-image">
+                    <div class="photo-initials hidden" id="celebrityInitials"></div>
+                    <div class="halftone-overlay"></div>
+                </div>
+                <div class="clipping-info">
+                    <h2 class="clipping-name" id="celebrityName"></h2>
+                    <p class="clipping-profession" id="celebrityProfession"></p>
+                </div>
+            </div>
+
+            <!-- Answer Buttons -->
+            <div class="answer-buttons" id="answerButtons">
+                <button class="btn btn-obituary" id="deadBtn" data-answer="dead">
+                    <span class="btn-label">OBITUARY</span>
+                    <span class="btn-sublabel">They have departed</span>
+                    <span class="btn-key">D</span>
+                </button>
+                <button class="btn btn-printing" id="aliveBtn" data-answer="alive">
+                    <span class="btn-label">STILL IN PRINT</span>
+                    <span class="btn-sublabel">Among the living</span>
+                    <span class="btn-key">A</span>
+                </button>
+            </div>
+
+            <!-- Result Feedback -->
+            <div class="result-feedback hidden" id="resultFeedback">
+                <div class="result-stamp" id="resultIcon"></div>
+                <div class="result-info">
+                    <p class="result-text" id="resultText"></p>
+                    <p class="result-fact" id="resultFact"></p>
+                </div>
+            </div>
+
+            <!-- Bonus Round: How Did They Go? -->
+            <div class="bonus-round hidden" id="bonusRound">
+                <p class="bonus-question">HOW DID THEY GO?</p>
+                <div class="bonus-buttons" id="bonusButtons">
+                    <button class="btn btn-bonus" data-cause="heart">
+                        <span class="bonus-icon">♥</span>
+                        <span class="bonus-label">Heart</span>
+                        <span class="btn-key">1</span>
+                    </button>
+                    <button class="btn btn-bonus" data-cause="cancer">
+                        <span class="bonus-icon">✝</span>
+                        <span class="bonus-label">Cancer</span>
+                        <span class="btn-key">2</span>
+                    </button>
+                    <button class="btn btn-bonus" data-cause="accident">
+                        <span class="bonus-icon">⚡</span>
+                        <span class="bonus-label">Accident</span>
+                        <span class="btn-key">3</span>
+                    </button>
+                    <button class="btn btn-bonus" data-cause="illness">
+                        <span class="bonus-icon">☤</span>
+                        <span class="bonus-label">Illness</span>
+                        <span class="btn-key">4</span>
+                    </button>
+                    <button class="btn btn-bonus" data-cause="violence">
+                        <span class="bonus-icon">☠</span>
+                        <span class="bonus-label">Violence</span>
+                        <span class="btn-key">5</span>
+                    </button>
+                    <button class="btn btn-bonus" data-cause="overdose">
+                        <span class="bonus-icon">℞</span>
+                        <span class="bonus-label">Overdose</span>
+                        <span class="btn-key">6</span>
+                    </button>
+                </div>
+                <div class="bonus-result hidden" id="bonusResult">
+                    <p class="bonus-result-text" id="bonusResultText"></p>
+                    <p class="bonus-actual-cause" id="bonusActualCause"></p>
+                </div>
+            </div>
+
+            <button class="btn btn-continue hidden" id="nextBtn">
+                NEXT SUBJECT
+                <span class="btn-key">↵</span>
+            </button>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="screen hidden" id="resultsScreen">
+            <div class="results-content">
+                <div class="results-banner">
+                    <span class="banner-text">✦ EXTRA! EXTRA! ✦</span>
+                </div>
+
+                <h2 class="results-headline">Final Edition Complete</h2>
+
+                <div class="final-score">
+                    <div class="score-display">
+                        <span class="score-number" id="finalScore">8</span>
+                        <span class="score-of">/<span id="finalTotal">10</span></span>
+                    </div>
+                    <div class="score-label">QUESTIONS ANSWERED CORRECTLY</div>
+                </div>
+
+                <div class="final-streak">
+                    <span id="finalStreak">5</span> in a row — Personal Record
+                </div>
+
+                <div class="play-streak" id="playStreakDisplay">
+                    🔥 <span id="playStreakCount">1</span> day streak
+                </div>
+
+                <div class="reading-card">
+                    <div class="reading-title">— THE RECORD —</div>
+                    <div class="emoji-grid" id="emojiGrid"></div>
+                </div>
+
+                <button class="btn btn-primary btn-large" id="shareBtn">
+                    TELL THE WORLD
+                </button>
+
+                <p class="share-hint" id="shareHint"></p>
+
+                <p class="come-back">Tomorrow's edition prints at midnight.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <a href="about.html">About</a>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/seededRandom.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/share.js"></script>
+    <script src="js/game.js"></script>
+    <script>
+        // Set current date in newspaper format
+        const dateEl = document.getElementById('currentDate');
+        if (dateEl) {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            dateEl.textContent = now.toLocaleDateString('en-US', options).toUpperCase();
+        }
+    </script>
+</body>
+</html>
